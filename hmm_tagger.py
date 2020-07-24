@@ -1,5 +1,9 @@
 # Implementation of an HMM tagger for part of speech tagging
 from collections import Counter, defaultdict
+from itertools import chain
+
+
+from utilities import read_data, read_tags
 
 def pair_counts(sequences_A, sequences_B):
     pair_count = defaultdict(dict)
@@ -48,3 +52,14 @@ def ending_counts(sequences):
                 tag_ends[seq[-1]]=1
     return tag_ends
 
+
+tagfile = "tags-universal.txt"
+datafile = "brown-universal.txt"
+
+tagset = read_tags(tagfile)
+sentences = read_data(datafile)
+keys = tuple(sentences.keys())
+wordset = frozenset(chain(*[s.words for s in sentences.values()]))
+word_sequences = tuple([sentences[k].words for k in keys])
+tag_sequences = tuple([sentences[k].tags for k in keys])
+N = sum(1 for _ in chain(*(s.words for s in sentences.values())))
